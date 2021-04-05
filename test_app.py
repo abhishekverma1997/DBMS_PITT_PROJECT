@@ -19,9 +19,38 @@ from itertools import combinations
 
 app = Flask(__name__)
 
-@app.route('/wtf')
+current_user_email="None"
+
+def current_user_fn(email_id):
+    global current_user_email
+    current_user_email=email_id
+
+@app.route('/pitt_nivesh_main')
 def home():
-	return render_template('pitt_nivesh_home.html')
+	return render_template('index2.html')
+
+@app.route('/user_profile')
+def user_profile():
+    
+    
+    con = pymysql.connect(host='134.209.169.96',
+                             user='pitt_nivesh',
+                             password='pitt_Nivesh_123@!',
+                             db='pitt_nivesh',
+                             charset='utf8mb4',
+                             cursorclass=pymysql.cursors.DictCursor)
+
+    cursor = con.cursor()
+    qry = 'SELECT * FROM user_profile WHERE '
+    qry = qry + 'email LIKE %s '
+    cursor.execute(qry, (current_user_email)) 
+            
+    rows = cursor.fetchall()
+            
+    con.commit()
+    con.close()
+    
+    return render_template('user_profile_page.html',what_profile=rows, user_name_what=current_user_email)
 
 @app.route('/user_reg', methods=['POST'])
 def user_registration():
@@ -30,6 +59,10 @@ def user_registration():
         user_id = request.form['user_id']
         email_id = request.form['email']
         password = request.form['password']
+        user_name = request.form['user_name']
+        dob = request.form['dob']
+        gender = request.form['gender']
+        bio = request.form['bio']
         
         
         con = pymysql.connect(host='134.209.169.96',
@@ -63,7 +96,10 @@ def user_registration():
             cursor = con.cursor()
             qry = 'INSERT INTO user_login (user_id, email, password)'
             qry = qry + 'VALUES(%s, %s, %s)'
+            qry2 = 'INSERT INTO user_profile (user_id, name, email, dob, gender, bio)'
+            qry2 = qry2 + 'VALUES(%s, %s, %s, %s, %s, %s)'
             cursor.execute(qry, (user_id, email_id, password)) 
+            cursor.execute(qry2, (user_id, user_name, email_id, dob, gender, bio)) 
             con.commit()
             con.close()
                 
@@ -77,10 +113,12 @@ def user_registration():
 
 @app.route('/home_page')
 def user_home_page():
-    return render_template('pitt_nivesh_home.html')
+    return render_template('pitt_nivesh_home.html', user_name_what=current_user_email)
 
 @app.route('/log_out_to_user_reg')
 def log_out_to_user_reg():
+    global current_user_email
+    current_user_email="None"
     return render_template('index2.html')
 
 @app.route('/login_user')
@@ -109,8 +147,6 @@ def user_authentication():
         cursor.execute(qry, (email_id, password)) 
     
         rows = cursor.fetchall()
-        #con.commit()
-        #con.close()
         
         #print(len(rows))
         
@@ -119,9 +155,6 @@ def user_authentication():
         con.commit()
         con.close()
         
-        #return render_template('login_auth.html', what=rows)
-        
-        #return render_template('login_auth.html', what="USER DOES NOT EXIST")
         
         if(len(rows)==0):
             
@@ -130,7 +163,9 @@ def user_authentication():
         if(rows[0]['email']==email_id and rows[0]['password']==password):
             
             #return render_template('login_auth.html', what=rows[0]['email'])
+            current_user_fn(email_id)
             return user_home_page()
+            
         
         else:
             return render_template('login_auth.html', what= "USER DOES NOT EXIST" )
@@ -143,7 +178,8 @@ def user_authentication():
 
 @app.route('/stock_search')
 def stock_search_button():
-    return render_template('stocks.html')
+    
+    return render_template('stocks.html', user_name_what=current_user_email)
     
            
 @app.route('/stock', methods=['POST'])
@@ -172,9 +208,13 @@ def stock_search():
         
         con.close()
         
+        #for index in range(len(rows)):
+            #print("{} \t {}".format(rows[index]['symbol'],rows[index]['stock_id']))
         
-        #render_template_string('hello {{ what }}', what=rows)
-        return render_template('stocks.html', what = rows)
+        #{{ what }}<br>
+        #<br>
+        
+        return render_template('stocks.html', what=rows, user_name_what=current_user_email)
         
         
         

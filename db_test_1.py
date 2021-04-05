@@ -41,8 +41,10 @@ finally:
 
 
 
-<p>{{what[index]['symbol']}}</p>
-<p>{{what[index]['stock_id']}}</p>
+
+<!--<h1>PITT NIVESH INC.</h1>-->
+<p style="text-align:center;"><img src="pitt_nivesh.jpg", align='center'></p>
+
 
 
 
