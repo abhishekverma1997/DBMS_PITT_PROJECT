@@ -8,12 +8,23 @@ h1 {text-align: center;}
 p {text-align: center;}
 div {text-align: center;}
 
+table, th, td {
+  border: 1px solid black;
+}
+
 </style>
 <!--<h1>PITT NIVESH INC.</h1>-->
 <p style="text-align:center;"><img src="pitt_nivesh_1.jpg", align='center'></p>
 </head>
 
 <body>
+
+<div style="text-align:center;">
+<p><b>Welcome</b></p>
+
+{{ user_name_what }}<br>
+<br>
+</div>
 
 <p><b>ENTER STOCK INFO. TO SEARCH</b></p>
 
@@ -33,11 +44,44 @@ div {text-align: center;}
 
 <div style="text-align:center;">
 <br>
-<a href="/wtf" align="center"><center><input type="button" value="Return Home"></center></a>
+<a href="/home_page" align="center"><center><input type="button" value="Return Home"></center></a>
 </div>
 
-{{ what }}<br>
-<br>
+
+
+{% block what %} 
+<div style="text-align:center;">
+<table style="width:100%">
+<tr>
+    <th>Stock ID</th>
+	<th>Time Stamp</th>
+	<th>Symbol</th>
+	<th>Name</th>
+	<th>Low</th>
+	<th>High</th>
+	<th>Open</th>
+	<th>Close</th>
+	<th>Volume</th>
+	
+ </tr>
+    {% for index in range( what|length ) %}
+		<tr>
+			<td>{{what[index]['stock_id']}}</td>
+			<td>{{what[index]['timestamp']}}</td>
+			<td>{{what[index]['symbol']}}</td>
+			<td>{{what[index]['name']}}</td>
+			<td>{{what[index]['low']}}</td>
+			<td>{{what[index]['high']}}</td>
+			<td>{{what[index]['open']}}</td>
+			<td>{{what[index]['close']}}</td>
+			<td>{{what[index]['volume']}}</td>
+		</tr>
+		
+	{% endfor %}
+</div>
+{% endblock %}
+
+
 
 </body>
 

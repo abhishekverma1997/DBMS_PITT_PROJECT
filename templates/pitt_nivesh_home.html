@@ -7,6 +7,9 @@
 h1 {text-align: center;}
 p {text-align: center;}
 div {text-align: center;}
+h2 {
+    display: inline;
+}
 
 </style>
 <!--<h1>PITT NIVESH INC.</h1>-->
@@ -18,9 +21,22 @@ div {text-align: center;}
 <p><b>HOME PAGE</b></p>
 
 <div style="text-align:center;">
+<p><b>Welcome</b></p>
 
-<a href="/stock_search" align="center"><center><input type="button" value="Search Stocks"></center></a>
+{{ user_name_what }}<br>
 <br>
+</div>
+
+
+
+<div style="text-align:center;">
+
+<a href="/stock_search" align="center"><center><input type="button" value="Search Stocks"><h2></center></h2></a>
+
+
+
+<br>
+
 <a href="/log_out_to_user_reg" align="center"><center><input type="button" value="Log Out"></center></a>
 
 </div>
