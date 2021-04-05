@@ -15,26 +15,30 @@ div {text-align: center;}
 
 <body>
 
-<p><b>ENTER USER REGITRATION INFO.</b></p>
+<p><b>ENTER USER LOG-IN INFO.</b></p>
 
-<form action="{{ url_for('user_registration') }}" method="POST">
+<form action="{{ url_for('user_authentication') }}" method="POST">
 
 <form method="POST">
-	<p><b>ENTER USER ID</b></p>
+	
 	<div style="text-align:center;">
-    <input name="user_id"><br>
+    
 	<p><b>ENTER EMAIL</b></p>
 	<input name="email"><br>
 	<p><b>ENTER Password</b></p>
 	<input name="password"><br>
 	<br>
-<input type="submit" class="myButton" value="Register User">
+<input type="submit" class="myButton" value="Log In">
 </div>
 
 </form>
 <br>
 <div style="text-align:center;">
-<a href="/login_user" align="center"><center><input type="button" value="Already a User"></center></a>
+
+</div>
+<div style="text-align:center;">
+{{ what }}<br>
+<br>
 </div>
 
 </body>
