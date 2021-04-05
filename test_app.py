@@ -40,13 +40,39 @@ def user_registration():
                              cursorclass=pymysql.cursors.DictCursor)
 
         cursor = con.cursor()
-        qry = 'INSERT INTO user_login (user_id, email, password)'
-        qry = qry + 'VALUES(%s, %s, %s)'
-        cursor.execute(qry, (user_id, email_id, password)) 
+        qry = 'SELECT * FROM user_login WHERE '
+        qry = qry + 'email LIKE %s '
+        cursor.execute(qry, (email_id)) 
+        
+        rows = cursor.fetchall()
+        
         con.commit()
         con.close()
+        
+        if(len(rows)==1):
             
-        return render_template('index2.html')
+            return render_template('index2.html', what= "USER ALREADY EXISTS" )
+        else:
+            con = pymysql.connect(host='134.209.169.96',
+                             user='pitt_nivesh',
+                             password='pitt_Nivesh_123@!',
+                             db='pitt_nivesh',
+                             charset='utf8mb4',
+                             cursorclass=pymysql.cursors.DictCursor)
+
+            cursor = con.cursor()
+            qry = 'INSERT INTO user_login (user_id, email, password)'
+            qry = qry + 'VALUES(%s, %s, %s)'
+            cursor.execute(qry, (user_id, email_id, password)) 
+            con.commit()
+            con.close()
+                
+            return render_template('index2.html', what= "USER SUCESSFULLY REGISTERED")
+            
+        
+
+        
+        
  
 
 @app.route('/home_page')
@@ -86,7 +112,7 @@ def user_authentication():
         #con.commit()
         #con.close()
         
-        print(len(rows))
+        #print(len(rows))
         
         #print(rows[0]['email'])
         
@@ -103,7 +129,8 @@ def user_authentication():
         
         if(rows[0]['email']==email_id and rows[0]['password']==password):
             
-            return render_template('login_auth.html', what=rows)
+            #return render_template('login_auth.html', what=rows[0]['email'])
+            return user_home_page()
         
         else:
             return render_template('login_auth.html', what= "USER DOES NOT EXIST" )
