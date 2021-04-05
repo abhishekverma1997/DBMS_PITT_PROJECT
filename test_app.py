@@ -21,7 +21,7 @@ app = Flask(__name__)
 
 @app.route('/wtf')
 def home():
-	return render_template('stocks.html')
+	return render_template('index2.html')
 
 @app.route('/user_reg', methods=['POST'])
 def user_registration():
