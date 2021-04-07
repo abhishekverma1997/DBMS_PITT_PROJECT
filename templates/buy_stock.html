@@ -11,6 +11,10 @@ h2 {
     display: inline;
 }
 
+table, th, td {
+  border: 1px solid black;
+}
+
 </style>
 
 </head>
@@ -19,29 +23,36 @@ h2 {
 
 <p style="text-align:center;"><img src="../static/pitt_nivesh.jpg" alt="Natural" /></p>
 
-<p><b>HOME PAGE</b></p>
+<p><b>Buy Stock Page</b></p>
 
 <div style="text-align:center;">
 <p><b>Welcome</b></p>
-
 {{ user_name_what }}<br>
 <br>
 </div>
 
 
+<form action="{{ url_for('user_registration') }}" method="POST">
+
+<form method="POST">
+	<p><b>ENTER STOCK SYMBOL</b></p>
+	<div style="text-align:center;">
+    <input name="stock_symbol"><br>
+	
+	<p><b>ENTER VOLUME</b></p>
+	<input name="stock_volume"><br>
+	
+	<br>
+<input type="submit" class="myButton" value="Buy Stock">
+</div>
+
+<br>
 
 <div style="text-align:center;">
 
-<a href="/user_profile" align="center"><center><input type="button" value="View Profile"></center></a>
+<a href="/home_page" align="center"><center><input type="button" value="Home Page"></center></a>
 
-<br>
 
-<a href="/stock_search" align="center"><center><input type="button" value="Search Stocks"><h2></center></h2></a>
-
-<br>
-
-<a href="/friend_search" align="center"><center><input type="button" value="Make Collaboration Group"></center></a>
-<br>
 
 <br>
 

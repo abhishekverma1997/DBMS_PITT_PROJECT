@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+<style>
+h1 {text-align: center;}
+p {text-align: center;}
+div {text-align: center;}
+
+table, th, td {
+  border: 1px solid black;
+}
+
+</style>
+
+</head>
+
+<body style="background-color:lightblue;">
+<p style="text-align:center;"><img src="../static/pitt_nivesh.jpg" alt="Natural" /></p>
+
+<div style="text-align:center;">
+<p><b>Welcome</b></p>
+
+{{ user_name_what }}<br>
+<br>
+</div>
+
+<p><b>ADD FRIENDS</b></p>
+
+<form action="{{ url_for('friend_add') }}" method="POST">
+
+<form method="POST">
+	<p><b>ENTER GROUP NAME</b></p>
+	<div style="text-align:center;">
+    <input name="group_name"><br>
+	
+
+	<p><b>ENTER FIRST FRIEND'S EMAIL</b></p>
+    <input name="friend_info1"><br>
+	
+
+	<p><b>ENTER SECOND FRIEND'S EMAIL</b></p>
+    <input name="friend_info2"><br>
+	
+
+	<p><b>ENTER THIRD FRIIEND'S EMAIL</b></p>
+    <input name="friend_info3"><br>
+	<br>
+	
+<input type="submit" class="myButton" value="Add Friends">
+
+</div>
+
+</form>
+
+<div style="text-align:center;">
+<br>
+<a href="/home_page" align="center"><center><input type="button" value="Return Home"></center></a>
+</div>
+
+<br>
+<div style="text-align:center;">
+{{what}}
+
+</div>
+
+</body>
+
+
+
+</html>
