@@ -20,10 +20,13 @@ from itertools import combinations
 app = Flask(__name__)
 
 current_user_email="None"
+current_user_id = 0
 
-def current_user_fn(email_id):
+def current_user_fn(email_id, user_id):
     global current_user_email
+    global current_user_id
     current_user_email=email_id
+    current_user_id = user_id
 
 @app.route('/pitt_nivesh_main')
 def home():
@@ -118,7 +121,9 @@ def user_home_page():
 @app.route('/log_out_to_user_reg')
 def log_out_to_user_reg():
     global current_user_email
+    global current_user_id
     current_user_email="None"
+    current_user_id = 0
     return render_template('index2.html')
 
 @app.route('/login_user')
@@ -163,7 +168,30 @@ def user_authentication():
         if(rows[0]['email']==email_id and rows[0]['password']==password):
             
             #return render_template('login_auth.html', what=rows[0]['email'])
-            current_user_fn(email_id)
+            con = pymysql.connect(host='134.209.169.96',
+                             user='pitt_nivesh',
+                             password='pitt_Nivesh_123@!',
+                             db='pitt_nivesh',
+                             charset='utf8mb4',
+                             cursorclass=pymysql.cursors.DictCursor)
+        
+            cursor = con.cursor()
+            
+            qry = 'SELECT user_id FROM user_login WHERE '
+            qry = qry + 'email LIKE %s'
+            
+            
+            cursor.execute(qry, (email_id)) 
+            
+            rows = cursor.fetchall()
+            con.commit()
+            con.close()
+            
+            user_id = rows[0]['user_id']
+        
+            
+            current_user_fn(email_id, user_id)
+            
             return user_home_page()
             
         
@@ -215,6 +243,293 @@ def stock_search():
         #<br>
         
         return render_template('stocks.html', what=rows, user_name_what=current_user_email)
+
+@app.route('/buy_stocks', methods=['POST'])
+def buy_stocks():
+    if request.method == 'POST':
+        stock_symbol = request.form['stock_symbol']
+        stock_volume = request.form['stock_volume']
+        
+        con = pymysql.connect(host='134.209.169.96',
+                             user='pitt_nivesh',
+                             password='pitt_Nivesh_123@!',
+                             db='pitt_nivesh',
+                             charset='utf8mb4',
+                             cursorclass=pymysql.cursors.DictCursor)
+        
+        cursor = con.cursor()
+        qry = 'SELECT open FROM available_stocks WHERE '
+        qry = qry + 'symbol LIKE %s '
+        
+        cursor.execute(qry, ('AAPL')) 
+    
+        rows = cursor.fetchall()
+        
+        con.commit()
+        
+        con.close()
+        
+        total = rows[0]['open']*stock_volume
+        
+        
+        con = pymysql.connect(host='134.209.169.96',
+                             user='pitt_nivesh',
+                             password='pitt_Nivesh_123@!',
+                             db='pitt_nivesh',
+                             charset='utf8mb4',
+                             cursorclass=pymysql.cursors.DictCursor)
+        
+        cursor = con.cursor()
+        qry = 'SELECT balance FROM accounts WHERE '
+        qry = qry + 'user_id=%s '
+        
+        cursor.execute(qry, 12)
+    
+        rows = cursor.fetchall()
+        
+        con.commit()
+        
+        con.close()
+        
+        current_user_balance = rows[0]['balance']
+    #HERE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        if(total>current_user_balance):
+            
+            return render_template('buy_stock.html', what='BALANCE INSUFFICIENT', user_name_what=current_user_email)
+        
+        
+ 
+
+
+
+@app.route('/friend_search')
+
+def friend_search_button():
+
+    return render_template('friend.html', user_name_what=current_user_email)     
+
+        
+
+@app.route('/friends', methods=['POST'])
+
+def friend_add():
+
+    if request.method == 'POST':
+
+        group_name = request.form['group_name']
+
+        friend_info1 = request.form['friend_info1']
+
+        friend_info2= request.form['friend_info2']
+
+        friend_info3 = request.form['friend_info3']
+        
+        friend_1_user_id= -1
+        friend_2_user_id= -1
+        friend_3_user_id= -1
+    
+      
+        #CHECK IF ADMIN AND GROUP NAME ALREADY EXISTS
+
+        current_user_id_test=6
+
+        con = pymysql.connect(host='134.209.169.96',
+
+                             user='pitt_nivesh',
+
+                             password='pitt_Nivesh_123@!',
+
+                             db='pitt_nivesh',
+
+                             charset='utf8mb4',
+
+                             cursorclass=pymysql.cursors.DictCursor)
+
+       
+
+        cursor = con.cursor()
+
+        qry = 'SELECT * FROM collaboration WHERE '
+
+        qry = qry + 'admin = %s '
+
+       
+        cursor.execute(qry, (current_user_id_test))
+
+    
+
+        rows = cursor.fetchall()
+
+        con.commit()
+
+       
+
+        con.close()
+        
+        # CHECKING IF ADMIN ALREADY HAS IS AN ADMIN OF SAME GROUP NAME
+        
+        if(rows[0]['group_name']==group_name and rows[0]['admin']==current_user_id_test):
+            
+            return render_template('friend.html', what= "ADMIN WITH THE SAME GROUP NAME ALREADY EXIST" )
+            
+        
+        #FRIEND's EXIST OR NOT 
+        
+        con = pymysql.connect(host='134.209.169.96',
+
+                             user='pitt_nivesh',
+
+                             password='pitt_Nivesh_123@!',
+
+                             db='pitt_nivesh',
+
+                             charset='utf8mb4',
+
+                             cursorclass=pymysql.cursors.DictCursor)
+
+       
+
+        cursor = con.cursor()
+
+        qry = 'SELECT * FROM user_profile WHERE '
+
+        qry = qry + 'email LIKE %s '
+        
+        cursor.execute(qry, (friend_info1))
+
+        rows_f1 = cursor.fetchall()
+
+        con.commit()
+
+        con.close()
+        
+       
+        
+        if(len(rows_f1)==0):
+            
+            return render_template('friend.html', what= "FRIEND 1 DOES NOT EXIST" )
+        
+        else:
+            
+            friend_1_user_id = rows_f1[0]['user_id']
+            
+        
+        
+    
+
+        # FRIEND 2
+        
+        con = pymysql.connect(host='134.209.169.96',
+
+                             user='pitt_nivesh',
+
+                             password='pitt_Nivesh_123@!',
+
+                             db='pitt_nivesh',
+
+                             charset='utf8mb4',
+
+                             cursorclass=pymysql.cursors.DictCursor)
+
+       
+
+        cursor = con.cursor()
+
+        qry = 'SELECT * FROM user_profile WHERE '
+
+        qry = qry + 'email LIKE %s '
+
+        
+        cursor.execute(qry, (friend_info2))
+
+        rows_f2 = cursor.fetchall()
+        
+
+        con.commit()
+
+        con.close()
+        
+        if(len(rows_f2)==0):
+            
+            return render_template('friend.html', what= "FRIEND 2 DOES NOT EXIST" )
+        
+        else:
+            
+            friend_2_user_id = rows_f2[0]['user_id']
+            
+            
+            
+        
+        # FRIEND 3
+        
+        con = pymysql.connect(host='134.209.169.96',
+
+                             user='pitt_nivesh',
+
+                             password='pitt_Nivesh_123@!',
+
+                             db='pitt_nivesh',
+
+                             charset='utf8mb4',
+
+                             cursorclass=pymysql.cursors.DictCursor)
+
+       
+
+        cursor = con.cursor()
+
+        qry = 'SELECT * FROM user_profile WHERE '
+
+        qry = qry + 'email LIKE %s '
+
+        
+        cursor.execute(qry, (friend_info3))
+
+        rows_f3 = cursor.fetchall()
+        
+
+        con.commit()
+
+        con.close()
+        
+        if(len(rows_f3)==0):
+            
+            return render_template('friend.html', what= "FRIEND 3 DOES NOT EXIST" )
+        
+        else:
+            
+            friend_3_user_id = rows_f3[0]['user_id']
+            
+        
+        
+        
+        con = pymysql.connect(host='134.209.169.96',
+
+                             user='pitt_nivesh',
+
+                             password='pitt_Nivesh_123@!',
+
+                             db='pitt_nivesh',
+
+                             charset='utf8mb4',
+
+                             cursorclass=pymysql.cursors.DictCursor)
+
+       
+
+        cursor = con.cursor()
+
+        qry = 'INSERT INTO collaboration (group_name, admin, friend_1,friend_2,friend_3)'
+
+        qry = qry + 'VALUES(%s, %s, %s, %s, %s)'
+        
+        cursor.execute(qry, (group_name, current_user_id, friend_1_user_id, friend_2_user_id, friend_3_user_id))
+
+        con.commit()
+
+        con.close()
+        
+        return render_template('friend.html', what= "COLLABORATION GROUP FORMED SUCCESSFULLY" )
         
         
         
