@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+<style>
+h1 {text-align: center;}
+p {text-align: center;}
+div {text-align: center;}
+
+table, th, td {
+  border: 1px solid black;
+}
+
+</style>
+
+</head>
+
+<body style="background-color:lightblue;">
+<p style="text-align:center;"><img src="../static/pitt_nivesh.jpg" alt="Natural" /></p>
+
+<div style="text-align:center;">
+<p><b>Welcome</b></p>
+
+{{ user_name_what }}<br>
+<br>
+</div>
+
+<p><b>YOUR COLLABORATION</b></p>
+
+
+<div style="text-align:center;">
+<br>
+<a href="/home_page" align="center"><center><input type="button" value="Return Home"></center></a>
+</div>
+
+
+
+{% block what_collab %}
+<div style="text-align:center;">
+<table style="width:100%">
+<tr>
+    <th>Group Name</th>
+	<th>Friend1</th>
+	<th>Friend2</th>
+	<th>Friend3</th>
+	
+	
+ </tr>
+  {% for index in range( what_collab|length ) %}
+		<tr>
+			<td>{{what_collab[index]['groupname']}}</td>
+			<td>{{what_collab[index]['friend1']}}</td>
+			<td>{{what_collab[index]['friend2']}}</td>
+			<td>{{what_collab[index]['friend3']}}</td>
+			
+		</tr>
+		
+{% endfor %}
+</div>
+
+{% endblock %}
+
+
+</body>
+
+
+
+</html>
