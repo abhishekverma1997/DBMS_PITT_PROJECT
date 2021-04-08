@@ -530,7 +530,105 @@ def friend_add():
         con.close()
         
         return render_template('friend.html', what= "COLLABORATION GROUP FORMED SUCCESSFULLY" )
+
+@app.route('/view_collab')
+def view_collab_button():
+    con = pymysql.connect(host='134.209.169.96',
+                             user='pitt_nivesh',
+                             password='pitt_Nivesh_123@!',
+                             db='pitt_nivesh',
+                             charset='utf8mb4',
+                             cursorclass=pymysql.cursors.DictCursor)
+
+    cursor = con.cursor()
+    qry = 'SELECT * FROM collaboration WHERE '
+    qry = qry + '%s in (admin,friend_1,friend_2,friend_3) '
+    cursor.execute(qry, (current_user_id))         
+    rows = cursor.fetchall()
+    temp={}
+    rec=[]
+    con.commit()
+    con.close()
+    for index in range(len(rows)):
+        temp['groupname']=rows[index]['group_name']
+        if(current_user_id!=rows[index]['admin']):
+            con = pymysql.connect(host='134.209.169.96',
+                             user='pitt_nivesh',
+                             password='pitt_Nivesh_123@!',
+                             db='pitt_nivesh',
+                             charset='utf8mb4',
+                             cursorclass=pymysql.cursors.DictCursor)
+            qry='SELECT * FROM user_login WHERE '
+            qry= qry + 'user_id LIKE %s'
+            cursor.execute(qry, (rows[index]['admin']))
+            row = cursor.fetchall()
+            temp['admin']=rows[index]['email']
+            con.commit()
+            con.close()
         
+        else:
+            temp['admin']=current_user_email
+        if(current_user_id!=rows[index]['friend_1']):
+            con = pymysql.connect(host='134.209.169.96',
+                             user='pitt_nivesh',
+                             password='pitt_Nivesh_123@!',
+                             db='pitt_nivesh',
+                             charset='utf8mb4',
+                             cursorclass=pymysql.cursors.DictCursor)
+            cursor = con.cursor()
+            qry='SELECT * FROM user_login WHERE '
+            qry= qry + 'user_id LIKE %s'
+            val=rows[index]['friend_1']
+            cursor.execute(qry, (val))
+            row = cursor.fetchall()
+            temp['friend1']=row[index]['email']
+            con.commit()
+            con.close()
+        else:
+            temp['friend1']=current_user_email
+        if(current_user_id!=rows[index]['friend_2']):
+            con = pymysql.connect(host='134.209.169.96',
+                             user='pitt_nivesh',
+                             password='pitt_Nivesh_123@!',
+                             db='pitt_nivesh',
+                             charset='utf8mb4',
+                             cursorclass=pymysql.cursors.DictCursor)
+            cursor = con.cursor()
+            qry='SELECT * FROM user_login WHERE '
+            qry= qry + 'user_id LIKE %s'
+            val=rows[index]['friend_2']
+            cursor.execute(qry, (val))
+            row = cursor.fetchall()
+            temp['friend2']=row[index]['email']
+            con.commit()
+            con.close()
+        else:
+            temp['friend2']=current_user_email
+        if(current_user_id!=rows[index]['friend_3']):
+            con = pymysql.connect(host='134.209.169.96',
+                             user='pitt_nivesh',
+                             password='pitt_Nivesh_123@!',
+                             db='pitt_nivesh',
+                             charset='utf8mb4',
+                             cursorclass=pymysql.cursors.DictCursor)
+            cursor = con.cursor()
+            qry='SELECT * FROM user_login WHERE '
+            qry= qry + 'user_id LIKE %s'
+            val=rows[index]['friend_3']
+            cursor.execute(qry, (val))
+            row = cursor.fetchall()
+            temp['friend3']=row[index]['email']
+            con.commit()
+            con.close()
+        else:
+            temp['friend3']=current_user_email
+        temp1=temp.copy()
+        rec.append(temp1)
+        temp.clear()
+    
+    
+    return render_template('collab.html',what_collab=rec,user_name_what=current_user_email)
+
         
         
         
