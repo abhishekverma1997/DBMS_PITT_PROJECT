@@ -9,15 +9,17 @@ from flask import Flask, render_template, request
 from flask import render_template_string
 import pickle
 import numpy as np
-
+from random import randint
 
 import pymysql.cursors
 import pandas as pd
-import datetime
+from datetime import datetime
+
 from itertools import combinations
 
 
 app = Flask(__name__)
+
 
 current_user_email="None"
 current_user_id = 0
@@ -54,6 +56,8 @@ def user_profile():
     con.close()
     
     return render_template('user_profile_page.html',what_profile=rows, user_name_what=current_user_email)
+
+    
 
 @app.route('/user_reg', methods=['POST'])
 def user_registration():
@@ -101,8 +105,11 @@ def user_registration():
             qry = qry + 'VALUES(%s, %s, %s)'
             qry2 = 'INSERT INTO user_profile (user_id, name, email, dob, gender, bio)'
             qry2 = qry2 + 'VALUES(%s, %s, %s, %s, %s, %s)'
+            qry3 = 'INSERT INTO accounts (user_id, balance, status)'
+            qry3 = qry3 + 'VALUES(%s, %s, %s)'
             cursor.execute(qry, (user_id, email_id, password)) 
-            cursor.execute(qry2, (user_id, user_name, email_id, dob, gender, bio)) 
+            cursor.execute(qry2, (user_id, user_name, email_id, dob, gender, bio))
+            cursor.execute(qry3, (user_id, 10000, 1)) 
             con.commit()
             con.close()
                 
@@ -243,6 +250,12 @@ def stock_search():
         #<br>
         
         return render_template('stocks.html', what=rows, user_name_what=current_user_email)
+    
+    
+@app.route('/buy_stocks_button')
+def buy_stocks_button():
+
+    return render_template('buy_stock.html', user_name_what=current_user_email)     
 
 @app.route('/buy_stocks', methods=['POST'])
 def buy_stocks():
@@ -250,57 +263,40 @@ def buy_stocks():
         stock_symbol = request.form['stock_symbol']
         stock_volume = request.form['stock_volume']
         
-        con = pymysql.connect(host='134.209.169.96',
+        try:
+            con = pymysql.connect(host='134.209.169.96',
                              user='pitt_nivesh',
                              password='pitt_Nivesh_123@!',
                              db='pitt_nivesh',
                              charset='utf8mb4',
                              cursorclass=pymysql.cursors.DictCursor)
         
-        cursor = con.cursor()
-        qry = 'SELECT open FROM available_stocks WHERE '
-        qry = qry + 'symbol LIKE %s '
-        
-        cursor.execute(qry, ('AAPL')) 
-    
-        rows = cursor.fetchall()
-        
-        con.commit()
-        
-        con.close()
-        
-        total = rows[0]['open']*stock_volume
-        
-        
-        con = pymysql.connect(host='134.209.169.96',
-                             user='pitt_nivesh',
-                             password='pitt_Nivesh_123@!',
-                             db='pitt_nivesh',
-                             charset='utf8mb4',
-                             cursorclass=pymysql.cursors.DictCursor)
-        
-        cursor = con.cursor()
-        qry = 'SELECT balance FROM accounts WHERE '
-        qry = qry + 'user_id=%s '
-        
-        cursor.execute(qry, 12)
-    
-        rows = cursor.fetchall()
-        
-        con.commit()
-        
-        con.close()
-        
-        current_user_balance = rows[0]['balance']
-    #HERE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        if(total>current_user_balance):
+            cursor = con.cursor()
             
-            return render_template('buy_stock.html', what='BALANCE INSUFFICIENT', user_name_what=current_user_email)
+            #args = [stock_symbol, stock_volume, current_user_email, current_user_id]
+            
+            
+            r = cursor.callproc('sp_trx', (stock_symbol, stock_volume, current_user_email, current_user_id,0))
+            
+            #print(result_args)
+            
+            
+        
+        except pymysql.connect.Error as error:
+            
+            return render_template('buy_stock.html', what='ROLL-BACKED : ERROR OCCURED WHILE BUYING STOCKS', user_name_what=current_user_email)
         
         
- 
+        finally:
+            con.close()
+            if len(r)>0:
+                return render_template('buy_stock.html', what='STOCK BOUGHT SUCCESS', user_name_what=current_user_email)
+            else:
+                return render_template('buy_stock.html', what='ROLL-BACKED : ERROR OCCURED WHILE BUYING STOCKS', user_name_what=current_user_email)
+                
+        
 
-
+            
 
 @app.route('/friend_search')
 
@@ -414,8 +410,6 @@ def friend_add():
             friend_1_user_id = rows_f1[0]['user_id']
             
         
-        
-    
 
         # FRIEND 2
         
@@ -530,6 +524,7 @@ def friend_add():
         con.close()
         
         return render_template('friend.html', what= "COLLABORATION GROUP FORMED SUCCESSFULLY" )
+
 
 @app.route('/view_collab')
 def view_collab_button():
