@@ -624,8 +624,23 @@ def view_collab_button():
     
     return render_template('collab.html',what_collab=rec,user_name_what=current_user_email)
 
-        
-        
+@app.route('/view_transaction')
+def view_transaction_button():
+    con = pymysql.connect(host='134.209.169.96',
+                             user='pitt_nivesh',
+                             password='pitt_Nivesh_123@!',
+                             db='pitt_nivesh',
+                             charset='utf8mb4',
+                             cursorclass=pymysql.cursors.DictCursor)
+    cursor = con.cursor()
+    qry='SELECT * from transact WHERE '
+    qry= qry + 'user_id LIKE %s'
+    cursor.execute(qry, (current_user_id))
+    rows=cursor.fetchall()
+   
+    
+    return render_template('transaction.html',what_collab=rows,user_name_what=current_user_email)
+    
         
     
 if __name__ == '__main__':
