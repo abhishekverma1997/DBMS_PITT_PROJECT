@@ -23,7 +23,7 @@ table, th, td {
 
 <p style="text-align:center;"><img src="../static/pitt_nivesh.jpg" alt="Natural" /></p>
 
-<p><b>Buy Stock Page</b></p>
+<p><b>Buy Stock in Collaboration</b></p>
 
 <div style="text-align:center;">
 <p><b>Welcome</b></p>
@@ -32,18 +32,30 @@ table, th, td {
 </div>
 
 
-<form action="{{ url_for('buy_stocks') }}" method="POST">
+<form action="{{ url_for('buy_stocks_collab') }}" method="POST">
 
 <form method="POST">
-	<p><b>ENTER STOCK SYMBOL</b></p>
+	<p><b>ENTER GROUP NAME</b></p>
 	<div style="text-align:center;">
-    <input name="stock_symbol"><br>
+    <input name="group_name"><br>
 	
-	<p><b>ENTER VOLUME</b></p>
+	<p><b>ENTER friend 1's Contribution</b></p>
+	<input name="f1_cont"><br>
+	
+	<p><b>ENTER friend 2's Contribution</b></p>
+	<input name="f2_cont"><br>
+	
+	<p><b>ENTER friend 3's Contribution</b></p>
+	<input name="f3_cont"><br>
+	
+	<p><b>ENTER Stock Symbol</b></p>
+	<input name="stock_symbol"><br>
+	
+	<p><b>ENTER Stock Volume</b></p>
 	<input name="stock_volume"><br>
 	
 	<br>
-<input type="submit" class="myButton" value="Buy Stock">
+<input type="submit" class="myButton" value="Buy Stock Together">
 </div>
 
 <br>
