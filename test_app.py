@@ -233,7 +233,7 @@ def stock_search():
         
         cursor = con.cursor()
         qry = 'SELECT * FROM available_stocks WHERE '
-        qry = qry + 'symbol LIKE %s '
+        qry = qry + 'symbol LIKE %s ORDER BY timestamp DESC'
         
         cursor.execute(qry, (stock_id_info)) 
     
@@ -289,6 +289,7 @@ def buy_stocks():
         
         finally:
             con.close()
+            
             if len(r)>0:
                 return render_template('buy_stock.html', what='STOCK BOUGHT SUCCESS', user_name_what=current_user_email)
             else:
@@ -640,7 +641,55 @@ def view_transaction_button():
    
     
     return render_template('transaction.html',what_collab=rows,user_name_what=current_user_email)
-    
+
+@app.route('/buy_stocks_collab_button')
+def buy_stocks_collab_button():
+    return render_template('buy_stocks_collab.html', user_name_what=current_user_email)
+
+
+@app.route('/buy_stocks_collab', methods=['POST'])
+def buy_stocks_collab():
+    if request.method == 'POST':
+        group_name = request.form['group_name']
+        f1_cont = request.form['f1_cont']
+        f2_cont = request.form['f2_cont']
+        f3_cont = request.form['f3_cont']
+        stock_symbol = request.form['stock_symbol']
+        stock_volume = request.form['stock_volume']
+        
+        try:
+            con = pymysql.connect(host='134.209.169.96',
+                             user='pitt_nivesh',
+                             password='pitt_Nivesh_123@!',
+                             db='pitt_nivesh',
+                             charset='utf8mb4',
+                             cursorclass=pymysql.cursors.DictCursor)
+        
+            cursor = con.cursor()
+            
+            #args = [stock_symbol, stock_volume, current_user_email, current_user_id]
+            
+            
+            r = cursor.callproc('sp_trx_collab', (group_name, f1_cont, f2_cont, f3_cont, stock_symbol, stock_volume, current_user_id,0))
+            
+            #print(result_args)
+        
+        except pymysql.connect.Error as error:
+            
+            return render_template('buy_stocks_collab.html', what='ROLL-BACKED : ERROR OCCURED WHILE BUYING STOCKS', user_name_what=current_user_email)
+        
+        
+        finally:
+            con.close()
+            
+            if len(r)>0:
+                return render_template('buy_stocks_collab.html', what='STOCK BOUGHT TOGETHER SUCCESS', user_name_what=current_user_email)
+            else:
+                return render_template('buy_stocks_collab.html', what='ROLL-BACKED : ERROR OCCURED WHILE BUYING STOCKS', user_name_what=current_user_email)
+                
+        
+        
+        
         
     
 if __name__ == '__main__':
