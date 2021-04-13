@@ -687,8 +687,24 @@ def buy_stocks_collab():
             else:
                 return render_template('buy_stocks_collab.html', what='ROLL-BACKED : ERROR OCCURED WHILE BUYING STOCKS', user_name_what=current_user_email)
                 
-        
-        
+@app.route('/view_investedstock')
+def view_investedstock_button():
+    con = pymysql.connect(host='134.209.169.96',
+                             user='pitt_nivesh',
+                             password='pitt_Nivesh_123@!',
+                             db='pitt_nivesh',
+                             charset='utf8mb4',
+                             cursorclass=pymysql.cursors.DictCursor)
+    cursor = con.cursor()
+    qry='SELECT * from invested WHERE '
+    qry= qry + 'user_id LIKE %s'
+    cursor.execute(qry, (current_user_id))
+    rows=cursor.fetchall()
+    print(rows)
+   
+    
+    return render_template('investedstock.html',what_collab=rows,user_name_what=current_user_email)
+    
         
         
     
