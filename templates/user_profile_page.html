@@ -58,6 +58,32 @@ table, th, td {
 </div>
 {% endblock %}
 
+{% block what_address %} 
+<div style="text-align:center;">
+<table style="width:100%">
+<tr>
+    <th>Street 1</th>
+	<th>Street 2</th>
+	<th>City</th>
+	<th>State</th>
+	<th>Country</th>
+	<th>Zip</th>
+	
+ </tr>
+    
+		<tr>
+			<td>{{what_address[0]['street1']}}</td>
+			<td>{{what_address[0]['street2']}}</td>
+			<td>{{what_address[0]['city']}}</td>
+			<td>{{what_address[0]['state']}}</td>
+			<td>{{what_address[0]['country']}}</td>
+			<td>{{what_address[0]['zip']}}</td>
+		</tr>
+		
+	
+</div>
+{% endblock %}
+
 </div>
 
 
