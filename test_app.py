@@ -55,7 +55,24 @@ def user_profile():
     con.commit()
     con.close()
     
-    return render_template('user_profile_page.html',what_profile=rows, user_name_what=current_user_email)
+    con = pymysql.connect(host='134.209.169.96',
+                             user='pitt_nivesh',
+                             password='pitt_Nivesh_123@!',
+                             db='pitt_nivesh',
+                             charset='utf8mb4',
+                             cursorclass=pymysql.cursors.DictCursor)
+
+    cursor = con.cursor()
+    qry_add = 'SELECT * FROM user_address WHERE '
+    qry_add = qry_add + 'user_id = %s '
+    cursor.execute(qry_add, (current_user_id)) 
+            
+    rows1 = cursor.fetchall()
+            
+    con.commit()
+    con.close()
+    
+    return render_template('user_profile_page.html',what_profile=rows, user_name_what=current_user_email, what_address=rows1)
 
     
 
@@ -70,6 +87,13 @@ def user_registration():
         dob = request.form['dob']
         gender = request.form['gender']
         bio = request.form['bio']
+        
+        street1 = request.form['st1']
+        street2 = request.form['st2']
+        city = request.form['city']
+        state = request.form['state']
+        country = request.form['country']
+        zip = request.form['zip']
         
         
         con = pymysql.connect(host='134.209.169.96',
@@ -107,9 +131,12 @@ def user_registration():
             qry2 = qry2 + 'VALUES(%s, %s, %s, %s, %s, %s)'
             qry3 = 'INSERT INTO accounts (user_id, balance, status)'
             qry3 = qry3 + 'VALUES(%s, %s, %s)'
+            qry4 = 'INSERT INTO user_address (user_id, street1, street2, city, state, country, zip)'
+            qry4 = qry4 + 'VALUES(%s, %s, %s, %s, %s, %s, %s)'
             cursor.execute(qry, (user_id, email_id, password)) 
             cursor.execute(qry2, (user_id, user_name, email_id, dob, gender, bio))
-            cursor.execute(qry3, (user_id, 10000, 1)) 
+            cursor.execute(qry3, (user_id, 10000, 1))
+            cursor.execute(qry4, (user_id, street1, street2, city, state, country, zip))
             con.commit()
             con.close()
                 
@@ -687,6 +714,7 @@ def buy_stocks_collab():
             else:
                 return render_template('buy_stocks_collab.html', what='ROLL-BACKED : ERROR OCCURED WHILE BUYING STOCKS', user_name_what=current_user_email)
                 
+
 @app.route('/view_investedstock')
 def view_investedstock_button():
     con = pymysql.connect(host='134.209.169.96',
@@ -705,6 +733,7 @@ def view_investedstock_button():
     
     return render_template('investedstock.html',what_collab=rows,user_name_what=current_user_email)
     
+        
         
         
     
