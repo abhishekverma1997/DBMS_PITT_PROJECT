@@ -289,6 +289,7 @@ def buy_stocks():
     if request.method == 'POST':
         stock_symbol = request.form['stock_symbol']
         stock_volume = request.form['stock_volume']
+        stock_fav = request.form['fav_stock']
         
         try:
             con = pymysql.connect(host='134.209.169.96',
@@ -302,8 +303,14 @@ def buy_stocks():
             
             #args = [stock_symbol, stock_volume, current_user_email, current_user_id]
             
-            
-            r = cursor.callproc('sp_trx', (stock_symbol, stock_volume, current_user_email, current_user_id,0))
+            if(stock_fav=='yes'):
+                
+                
+                r = cursor.callproc('sp_trx', (stock_symbol, stock_volume, current_user_email, current_user_id, 1,0))
+                
+            else:
+               
+                r = cursor.callproc('sp_trx', (stock_symbol, stock_volume, current_user_email, current_user_id, 0,0))
             
             #print(result_args)
             
