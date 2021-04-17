@@ -3,6 +3,25 @@
 <html>
 
 <head>
+
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="description" content="">
+	<meta name="author" content="">
+  
+	<title>Pitt Nivesh</title>
+  
+	<!-- Bootstrap core CSS -->
+	<link href="../static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  
+	<!-- Custom fonts for this template -->
+	<link href="../static/vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
+	<link href="../static/vendor/simple-line-icons/css/simple-line-icons.css" rel="stylesheet" type="text/css">
+	<link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
+  
+	<!-- Custom styles for this template -->
+	<link href="../static/css/landing-page.min.css" rel="stylesheet">
+  
 <style>
 h1 {text-align: center;}
 p {text-align: center;}
@@ -19,9 +38,25 @@ table, th, td {
 
 </head>
 
+
+
 <body style="background-color:lightblue;">
 
 <p style="text-align:center;"><img src="../static/pitt_nivesh.jpg" alt="Natural" /></p>
+
+<div style="text-align:right;">
+
+	<a href="/home_page" align="center" ><center><input type="button" class="btn btn-success" value="Home Page"></center></a>
+	
+	
+	<br>
+	
+	<a href="/log_out_to_user_reg" ><center><input type="button" class="btn btn-info" value="Log Out"></center></a>
+	
+	</div>
+
+	<br>
+	
 
 <p><b>USER PROFILE PAGE</b></p>
 
@@ -33,26 +68,14 @@ table, th, td {
 
 
 {% block what_profile %} 
-<div style="text-align:center;">
-<table style="width:100%">
-<tr>
-    <th>User Name</th>
-	<th>User ID</th>
-	<th>Date of Birth</th>
-	<th>Gender</th>
-	<th>Email</th>
-	<th>BIO</th>
+<div style="text-align:center;"> 
+User Name : {{what_profile[0]['name']}} </br> </br>
+User ID :  {{what_profile[0]['user_id']}} </br> </br>
+Date of Birth : {{what_profile[0]['dob']}} </br> </br>
+Gender : {{what_profile[0]['gender']}} </br> </br>
+Email : {{what_profile[0]['email']}} </br> </br>
+Bio : {{what_profile[0]['bio']}}</br> </br>
 	
- </tr>
-    
-		<tr>
-			<td>{{what_profile[0]['name']}}</td>
-			<td>{{what_profile[0]['user_id']}}</td>
-			<td>{{what_profile[0]['dob']}}</td>
-			<td>{{what_profile[0]['gender']}}</td>
-			<td>{{what_profile[0]['email']}}</td>
-			<td>{{what_profile[0]['bio']}}</td>
-		</tr>
 		
 	
 </div>
@@ -60,26 +83,12 @@ table, th, td {
 
 {% block what_address %} 
 <div style="text-align:center;">
-<table style="width:100%">
-<tr>
-    <th>Street 1</th>
-	<th>Street 2</th>
-	<th>City</th>
-	<th>State</th>
-	<th>Country</th>
-	<th>Zip</th>
-	
- </tr>
-    
-		<tr>
-			<td>{{what_address[0]['street1']}}</td>
-			<td>{{what_address[0]['street2']}}</td>
-			<td>{{what_address[0]['city']}}</td>
-			<td>{{what_address[0]['state']}}</td>
-			<td>{{what_address[0]['country']}}</td>
-			<td>{{what_address[0]['zip']}}</td>
-		</tr>
-		
+
+    Address: {{what_address[0]['street1']}}, {{what_address[0]['street2']}}, </br>
+	{{what_address[0]['city']}},
+	{{what_address[0]['state']}},
+	{{what_address[0]['country']}},
+	{{what_address[0]['zip']}}
 	
 </div>
 {% endblock %}
@@ -88,20 +97,12 @@ table, th, td {
 
 
 
-<div style="text-align:center;">
-
-<a href="/home_page" align="center"><center><input type="button" value="Home Page"></center></a>
-
-
-<br>
-
-<a href="/log_out_to_user_reg" align="center"><center><input type="button" value="Log Out"></center></a>
-
-</div>
 
 
 </body>
 
-
+<!-- Bootstrap core JavaScript -->
+<script src="../static/vendor/jquery/jquery.min.js"></script>
+<script src="../static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
 </html>
