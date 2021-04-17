@@ -30,6 +30,10 @@ def current_user_fn(email_id, user_id):
     current_user_email=email_id
     current_user_id = user_id
 
+@app.route('/')
+def homepage():
+    return render_template('index.html')
+
 @app.route('/pitt_nivesh_main')
 def home():
 	return render_template('index2.html')
@@ -54,7 +58,7 @@ def user_profile():
             
     con.commit()
     con.close()
-    
+
     con = pymysql.connect(host='134.209.169.96',
                              user='pitt_nivesh',
                              password='pitt_Nivesh_123@!',
@@ -66,13 +70,16 @@ def user_profile():
     qry_add = 'SELECT * FROM user_address WHERE '
     qry_add = qry_add + 'user_id = %s '
     cursor.execute(qry_add, (current_user_id)) 
-            
+
     rows1 = cursor.fetchall()
-            
+
     con.commit()
     con.close()
-    
+
     return render_template('user_profile_page.html',what_profile=rows, user_name_what=current_user_email, what_address=rows1)
+
+
+
 
     
 
@@ -87,13 +94,15 @@ def user_registration():
         dob = request.form['dob']
         gender = request.form['gender']
         bio = request.form['bio']
-        
+
         street1 = request.form['st1']
         street2 = request.form['st2']
         city = request.form['city']
         state = request.form['state']
         country = request.form['country']
         zip = request.form['zip']
+
+
         
         
         con = pymysql.connect(host='134.209.169.96',
@@ -135,6 +144,7 @@ def user_registration():
             qry4 = qry4 + 'VALUES(%s, %s, %s, %s, %s, %s, %s)'
             cursor.execute(qry, (user_id, email_id, password)) 
             cursor.execute(qry2, (user_id, user_name, email_id, dob, gender, bio))
+            cursor.execute(qry3, (user_id, 10000, 1)) 
             cursor.execute(qry3, (user_id, 10000, 1))
             cursor.execute(qry4, (user_id, street1, street2, city, state, country, zip))
             con.commit()
@@ -158,7 +168,7 @@ def log_out_to_user_reg():
     global current_user_id
     current_user_email="None"
     current_user_id = 0
-    return render_template('index2.html')
+    return render_template('index.html')
 
 @app.route('/login_user')
 def login_user():
@@ -329,6 +339,8 @@ def buy_stocks():
             else:
                 return render_template('buy_stock.html', what='ROLL-BACKED : ERROR OCCURED WHILE BUYING STOCKS', user_name_what=current_user_email)
                 
+        
+
         
 
             
@@ -721,7 +733,6 @@ def buy_stocks_collab():
             else:
                 return render_template('buy_stocks_collab.html', what='ROLL-BACKED : ERROR OCCURED WHILE BUYING STOCKS', user_name_what=current_user_email)
                 
-
 @app.route('/view_investedstock')
 def view_investedstock_button():
     con = pymysql.connect(host='134.209.169.96',
@@ -740,7 +751,6 @@ def view_investedstock_button():
     
     return render_template('investedstock.html',what_collab=rows,user_name_what=current_user_email)
     
-        
         
         
     
